@@ -1,0 +1,29 @@
+#ifndef DUNGEONGRAPH_H
+#define DUNGEONGRAPH_H
+
+#include <string>
+#include <vector>
+
+class DungeonGraph {
+ public:
+  DungeonGraph();
+
+  void addRoom(const std::string& name, std::string& description);
+
+  void connectRooms(const std::string& roomA, const std::string& roomB);
+
+  Room* getRoom(const std::string& name);
+
+  bool areConnected(const std::string& roomA, std::string& roomB);
+
+  std::vector<Room*> getNeighbors(const std::string& roomName);
+
+ private:
+  std::vector<Room> rooms;
+  std::vector<std::vector<int>> adjacencyList;
+
+  int findRoomIndex(const std::string& name);
+};
+
+#endif
+  
