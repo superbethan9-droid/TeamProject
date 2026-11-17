@@ -14,7 +14,20 @@ int main()
 
     Room* currentRoom = dungeon.getRoom("Entrance");
 
-    std::cout << "Dungeon Crawler Milestone 1\n";
+    std::cout << "====================================\n";
+    std::cout << "      DUNGEON CRAWLER\n";
+    std::cout << "====================================\n";
+    std::cout << "Available Commands:\n";
+    std::cout << "  look              - Examine room\n";
+    std::cout << "  go <room>         - Move to room\n";
+    std::cout << "  take <item>       - Pick up item\n";
+    std::cout << "  drop <item>       - Drop item\n";
+    std::cout << "  inventory         - View inventory\n";
+    std::cout << "  use <item>        - Use an item\n";
+    std::cout << "  undo              - Undo last action\n";
+    std::cout << "  menu              - Show commands\n";
+    std::cout << "  quit              - Exit game\n";
+    std::cout << "====================================\n";
 
     std::string line;
 
@@ -186,10 +199,8 @@ int main()
 
         else
         {
-            std::cout
-                << "Unknown command.\n";
+	  std::cout << "Unknown command.\n";
         }
     }
-
     return 0;
 }
