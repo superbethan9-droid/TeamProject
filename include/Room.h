@@ -8,8 +8,8 @@ struct Room
 {
     std::string name;
     std::string description;
-
     std::vector<std::string> items;
+    bool visited = false;
 };
 
 #endif
