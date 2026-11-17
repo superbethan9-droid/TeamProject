@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include "DungeonGraph.h"
-#include "Inventory.h"
+#include "inventory.h"
 
 int main()
 {
