@@ -38,6 +38,12 @@ DungeonGraph::DungeonGraph()
     addRoom("Exit",
             "The way out of the dungeon.");
 
+    getRoom("Armory")->items.push_back("Sword");
+
+    getRoom("Library")->items.push_back("Key");
+
+    getRoom("Kitchen")->items.push_back("Apple");
+
     connectRooms("Entrance", "Great Hall");
     connectRooms("Entrance", "Armory");
 
