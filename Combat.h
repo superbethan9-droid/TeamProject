@@ -12,3 +12,9 @@ struct Player
     int baseDamage = 3;
     bool isAlive() const { return health > 0; }
 };
+
+// Random damage from 1..maxDmg
+inline int rollDamage(int maxDmg)
+{
+    return 1 + std::rand() % maxDmg;
+}
