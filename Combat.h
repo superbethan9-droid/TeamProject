@@ -18,3 +18,17 @@ inline int rollDamage(int maxDmg)
 {
     return 1 + std::rand() % maxDmg;
 }
+
+// One round: player strikes, then monster strikes back if still alive.
+inline void combatRound(Player& player, Monster& monster, int weaponBonus)
+{
+    int dealt = rollDamage(player.baseDamage + weaponBonus);
+    monster.health -= dealt;
+    std::cout << "You hit the " << monster.name
+              << " for " << dealt << " damage.\n";
+
+    if (!monster.isAlive())
+    {
+        std::cout << "The " << monster.name << " is defeated!\n";
+        return;
+    }
