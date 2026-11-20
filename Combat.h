@@ -32,3 +32,15 @@ inline void combatRound(Player& player, Monster& monster, int weaponBonus)
         std::cout << "The " << monster.name << " is defeated!\n";
         return;
     }
+    
+    int taken = rollDamage(monster.attack);
+    player.health -= taken;
+    std::cout << "The " << monster.name << " hits you for "
+              << taken << " damage. (HP: "
+              << (player.health > 0 ? player.health : 0)
+              << "/" << player.maxHealth << ")\n";
+}
+
+#endif
+
+    
