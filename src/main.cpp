@@ -7,10 +7,30 @@
 #include "DungeonGraph.h"
 #include "inventory.h"
 
+#include "Combat.h"
+#include "MonsterActor.h"
+#include "TurnPriorityQueue.h"
+
 int main()
 {
     DungeonGraph dungeon;
     InventoryHashTable inventory;
+    
+    Player player;
+    std::vector<MonsterActor> monsters = {
+        {{"Rat King", "A giant rat", 10, 10, 2, ""},
+	 "Cellar", 4},
+
+        {{"Goblin", "A hostile goblin", 15, 15, 3, ""},
+         "Barracks", 6},
+
+        {{"Guard", "An armored guard", 25, 25, 4, ""},
+         "Courtyard", 5},
+
+        {{"Skeleton", "An undead skeleton", 20, 20, 2, ""},
+         "Crypt", 3}
+    };
+
 
     Room* currentRoom = dungeon.getRoom("Entrance");
 
@@ -31,12 +51,76 @@ int main()
 
     std::string line;
 
-    while (true)
+    bool gameRunning = true;
+
+    while (gameRunning && player.isAlive())
     {
+      TurnPriorityQueue turnOrder;
+      turnOrder.push({"Player", 5, true});
+
+      for (const MonsterActor& actor : monsters)
+      {
+        if (actor.monster.isAlive())
+        {
+            turnOrder.push({
+                actor.monster.name,
+                actor.speed,
+                false
+            });
+        }
+      }
+
+      while (!turnOrder.empty() &&
+           gameRunning &&
+           player.isAlive())
+      {
+        TurnEntry turn = turnOrder.pop();
+
+        
+	if (!turn.isPlayer)
+	{
+	  for (MonsterActor& actor : monsters)
+	  {
+	    if (actor.monster.name == turn.name &&
+		actor.monster.isAlive())
+	    {
+	      if (actor.room == currentRoom->name)
+              {
+                std::cout << "\nEncounter: "
+                          << actor.monster.name << "!\n";
+
+                int weaponBonus =
+                    inventory.lookup("Sword") ? 3 : 0;
+
+                combatRound(player, actor.monster,
+                            weaponBonus);
+
+                if (!player.isAlive())
+		  {
+		    std::cout << "Game Over! "
+                              << "You were defeated.\n";
+                    gameRunning = false;
+                }
+              }
+              else
+              {
+                std::cout << "[Turn] "
+                          << actor.monster.name
+                          << " is in " << actor.room
+                          << " (movement not connected yet).\n";
+              }
+	      break;
+	    }
+	  }
+	  continue;
+	}
+
+     
         std::cout << "\n> ";
 
         if (!std::getline(std::cin, line))
         {
+            gameRunning = false;
             break;
         }
 
@@ -51,6 +135,7 @@ int main()
         if (command == "quit")
         {
             std::cout << "Goodbye!\n";
+	    gameRunning=false;
             break;
         }
 
@@ -94,7 +179,7 @@ int main()
             if (argument.empty())
             {
                 std::cout << "Usage: go <room>\n";
-                continue;
+                
             }
 
             if (dungeon.areConnected(
@@ -108,6 +193,21 @@ int main()
                     << "Moved to "
                     << currentRoom->name
                     << "\n";
+		if (currentRoom->name == "Exit")
+		  {
+		    if (inventory.lookup("Treasure") != nullptr)
+		      {
+			std::cout << "\nCongratulations! You escaped "
+                                  << "the dungeon with the Treasure!\n";
+			std::cout << "YOU WIN!\n";
+			gameRunning = false;
+		      }
+		      else
+		      {
+			std::cout << "You need the treasure to escape the dungeon!\n";
+		      }
+		  }
+			
             }
             else
             {
@@ -201,6 +301,7 @@ int main()
         {
 	  std::cout << "Unknown command.\n";
         }
+      }
     }
     return 0;
 }
